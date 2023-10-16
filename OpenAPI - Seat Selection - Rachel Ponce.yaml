@@ -1,0 +1,81 @@
+openapi: 3.0.0
+info:
+  title: OpenAPI for Buying Movie Tickets
+  description: API for selecting seats when buying movie tickets.
+  version: 1.0.0
+
+
+paths:
+  /seats:
+    get:
+      summary: Get Available Seats
+      description: Retrieve a display of available seats for a specific showtime.
+      parameters:
+        - name: showtimeID
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The unique ID of the selected showtime.
+      responses:
+        '200':
+          description: Successful retrieval of available seats.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '404':
+          description: No available seats for selected showtime.
+
+    post:
+      summary: Select Seats
+      description: Choose specific seats for the selected showtime.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                showtimeID:
+                  type: string
+                  description: The unique ID of the selected showtime.
+                seats:
+                  type: array
+                  items:
+                    type: string
+                  description: An array of IDS for each of the selected seats.
+      responses:
+        '200':
+          description: Seats successfully selected.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Seats with the specified IDS in a selected showtime are not available.
+
+  /seats/{seatID}:
+    delete:
+      summary: Remove Seat Selection
+      description: Release seats that were initially selected by user.
+      parameters:
+        - name: seatID
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The unique ID of the seat to release.
+      responses:
+        '200':
+          description: Seat successfully removed.
+        '403':
+          description: A seat that was not selected cannot be released.
+        '404':
+          description: Seat for selected showtime not found.
+          
